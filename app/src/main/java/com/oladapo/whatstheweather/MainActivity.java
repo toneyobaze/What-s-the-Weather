@@ -1,13 +1,16 @@
 package com.oladapo.whatstheweather;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +19,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,8 +34,25 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("cityName", cityName.getText().toString());
 
-        DownloadTask task = new DownloadTask();
-        task.execute("https://samples.openweathermap.org/data/2.5/weather?q=" + cityName.getText().toString() + "&appid=b6907d289e10d714a6e88b30761fae22");
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(cityName.getWindowToken(), 0);
+
+        try {
+
+            String encodedCityName = URLEncoder.encode(cityName.getText().toString(), "UTF-8");
+
+            DownloadTask task = new DownloadTask();
+            task.execute("https://samples.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&appid=b6907d289e10d714a6e88b30761fae22");
+
+
+        } catch (UnsupportedEncodingException e) {
+
+            e.printStackTrace();
+
+            Toast.makeText(getApplicationContext(),"Could not find location!",  Toast.LENGTH_LONG);
+
+
+        }
 
     }
 
@@ -77,14 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
                 return result;
 
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
 
-                e.printStackTrace();
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-                Log.e("vxv", e.toString());
+                Toast.makeText(getApplicationContext(),"Could not find weather!",  Toast.LENGTH_LONG);
 
             }
 
@@ -96,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             try {
+
+                String message = "";
 
                 JSONObject jsonObject = new JSONObject(result);
 
@@ -109,8 +128,27 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject jsonPart = arr.getJSONObject(i);
 
-                    Log.i("main", jsonPart.getString("description"));
-                    Log.i("description", jsonPart.getString("description"));
+                    String main = "";
+                    String description = "";
+
+                    main = jsonPart.getString("main");
+                    description = jsonPart.getString("description");
+
+                    if (main!= "" && description !="") {
+
+                        message += main + ": " + description + "\r\n";
+
+                    }
+
+                }
+
+                if (message != "") {
+
+                    weatherResult.setText(message);
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(),"Could not find location!",  Toast.LENGTH_LONG);
 
                 }
 

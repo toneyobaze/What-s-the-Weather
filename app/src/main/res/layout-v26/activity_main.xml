@@ -55,9 +55,7 @@
         android:inputType="text"
         android:singleLine="false"
         android:textColor="@android:color/white"
-        android:autofillHints=""
-        tools:targetApi="o"
-        tools:ignore="LabelFor" />
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/weatherResult"
