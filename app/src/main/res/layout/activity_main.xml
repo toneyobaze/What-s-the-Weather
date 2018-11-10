@@ -23,6 +23,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="238dp"
+        android:onClick="findWeather"
         android:text="What's The Weather?" />
 
     <TextView
@@ -39,7 +40,7 @@
         android:textSize="30sp" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/cityName"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -47,7 +48,8 @@
         android:layout_marginTop="151dp"
         android:ems="10"
         android:inputType="text"
-        android:singleLine="false" />
+        android:singleLine="false"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/weatherResult"
@@ -57,6 +59,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="152dp"
         android:textColor="@android:color/white"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </RelativeLayout>

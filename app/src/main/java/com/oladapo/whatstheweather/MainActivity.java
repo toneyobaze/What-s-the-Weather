@@ -4,6 +4,10 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,13 +22,26 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    EditText cityName;
+    TextView weatherResult;
+
+    public void findWeather(View view) {
+
+        Log.i("cityName", cityName.getText().toString());
+
+        DownloadTask task = new DownloadTask();
+        task.execute("https://samples.openweathermap.org/data/2.5/weather?q=" + cityName.getText().toString() + "&appid=b6907d289e10d714a6e88b30761fae22");
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DownloadTask task = new DownloadTask();
-        task.execute("https://samples.openweathermap.org/data/2.5/weather?q=London,uk&appid=b6907d289e10d714a6e88b30761fae22");
+        cityName = findViewById(R.id.cityName);
+        weatherResult = findViewById(R.id.weatherResult);
+
     }
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
@@ -67,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
 
                 e.printStackTrace();
+                Log.e("vxv", e.toString());
 
             }
 
@@ -92,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonPart = arr.getJSONObject(i);
 
                     Log.i("main", jsonPart.getString("description"));
+                    Log.i("description", jsonPart.getString("description"));
 
                 }
 
